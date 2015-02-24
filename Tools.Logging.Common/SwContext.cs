@@ -22,10 +22,21 @@ namespace Tools.Logging.Common
     }
 
     /// <summary>
-    /// Обертка над TimeLog
+    /// Базовый контекст
+    /// </summary>
+    public abstract class BaseSwContext
+    {
+        /// <summary>
+        /// Счетчик созданных контекстов, в базовом классе, чтобы был один на все дженерики
+        /// </summary>
+        protected static readonly ThreadLocal<int> Counter = new ThreadLocal<int>();
+    }
+
+    /// <summary>
+    /// Контекст
     /// </summary>
     /// <typeparam name="TResult">Тип результата</typeparam>
-    public class SwContext<TResult> : ISwContext<TResult>
+    public class SwContext<TResult> : BaseSwContext, ISwContext<TResult>
     {
         /// <summary>
         /// Результат, может использоваться для логирования
@@ -36,11 +47,6 @@ namespace Tools.Logging.Common
         /// Идентификатор
         /// </summary>
         private readonly Guid _key;
-
-        /// <summary>
-        /// Счетчик созданных контекстов
-        /// </summary>
-        private static readonly ThreadLocal<int> Counter = new ThreadLocal<int>();
 
         /// <summary>
         /// Обработчик результата для формирования строки для записи в лог
