@@ -71,7 +71,7 @@ namespace Tools.Logging.Common
 
             _resultHandler = resultHandler;
             _writeToLog = writeToLog;
-            _key = Guid.NewGuid();
+            _key = GenerateKey();
 
             Counter.Value++;
 
@@ -89,7 +89,7 @@ namespace Tools.Logging.Common
 
             //Если есть обработчик результата, выполняем
             if (_resultHandler != null)
-                TimeLog<Guid>.Add(_key, _resultHandler(Result));
+                Append(_resultHandler(Result));
 
             //если указан способ записи в лог,
             //если последний контекст в потоке,
@@ -104,7 +104,16 @@ namespace Tools.Logging.Common
         /// <param name="message">Сообщение</param>
         public void Append(string message)
         {
-            TimeLog<Guid>.Add(_key, message);
+            TimeLog<Guid>.Add(GenerateKey(), message);
+        }
+
+        /// <summary>
+        /// Вспомагательный метод для получения идентификатора
+        /// </summary>
+        /// <returns>Новый идентификатор</returns>
+        private Guid GenerateKey()
+        {
+            return Guid.NewGuid();
         }
     }
 }
